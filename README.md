@@ -3,7 +3,8 @@
 <table>
 <tr>
 <td>
-Un BOT sencillo de multiples utilidades dentro del grupo de [AlgoritmiaUNO](https://t.me/algoritmiaUNO). 
+
+Un BOT sencillo de multiples utilidades dentro del grupo de [algoritmia](https://t.me/algoritmiaUNO).
 
 Inicialmente se trata de mostrar el desafio de la semana y conectarse con el [repo](https://github.com/gnuno/algoritmia) y estar pendiente a eventos.
 </td>
