@@ -9,8 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 ### Variables necesarias para el BOT
-API_TOKEN = ""
-
+PORT = int(os.environ.get('PORT', 8443))
+API_TOKEN = os.environ.get('TOKEN')
+APP_NAME = os.environ.get('NAME')
 
 ### Comandos del BOT
 def start(update, context):
@@ -27,7 +28,7 @@ def help_command(update, context):
     """Mensaje de ayuda al usar /help"""
     logger.info(f"USER {update.message.from_user.id} /help")
     
-    update.message.reply_text('nostas biendo kestoi chikito bieja tonta {}'.format(5))
+    update.message.reply_text('nostas biendo kestoi chikito bieja tonta')
 
 
 def error(update, context):
@@ -49,7 +50,10 @@ def main():
     dispatcher.add_error_handler(error)
 
     # Iniciar bot
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+        port= PORT,
+        url_path= API_TOKEN,
+        webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
     updater.idle()
 
 
