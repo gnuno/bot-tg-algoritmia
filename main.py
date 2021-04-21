@@ -1,6 +1,7 @@
 import logging
 import requests
 import os
+import sys
 import messages as responses
 from github import Github
 from telegram.ext import Updater, CommandHandler
@@ -10,10 +11,6 @@ from telegram.ext import Updater, CommandHandler
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-### Variables para GitHub API
-g = Github('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')
-REPO = g.get_repo('gnuno/algoritmia')
-
 ### Variables para el Telegram BOT
 PORT = int(os.environ.get('PORT', 8443))
 MODE = os.environ.get('MODE')
@@ -22,6 +19,7 @@ MODE = os.environ.get('MODE')
 if MODE == 'prod':
     API_TOKEN = os.environ.get('TOKEN')
     APP_NAME = os.environ.get('NAME')
+    GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
     def run(updater):
         updater.start_webhook(listen="0.0.0.0",
             port= PORT,
@@ -30,9 +28,14 @@ if MODE == 'prod':
         return updater
 else:
     API_TOKEN = '1761269185:AAFrxdpg13lS4X6NaHnENizGKa0VXsW9z9c'
+    GITHUB_TOKEN = sys.argv[1]
     def run(updater):
         updater.start_polling()
         return updater
+
+### Variables para GitHub API
+g = Github(GITHUB_TOKEN)
+REPO = g.get_repo('gnuno/algoritmia')
 
 ### Comandos del BOT
 def start(update, context):

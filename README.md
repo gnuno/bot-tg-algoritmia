@@ -37,9 +37,8 @@ pipenv install
 # Agregar dependencias 
 pipenv install {PAQUETE}
 
-# Si agregas nuevas dependencias no te olvides de plasmarlas en requirements.txt con
+# Si agregas nuevas dependencias no te olvides de plasmarlas en el .lock
 pipenv lock 
-pipenv lock -r > requirements.txt
 
 # Si queres borrar el entorno virtual
 pipenv --rm
@@ -50,7 +49,7 @@ pipenv --rm
 Podes probar las nuevas funcionalidades del bot antes de hacer el PullRequest.
 Ejecuta esto y anda a [UNOTestBots_BOT](http://t.me/UNOTestBots_BOT)
 ```
-pipenv run main.py
+pipenv run main.py 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
 ```
 
 ### Aportes
