@@ -49,7 +49,7 @@ pipenv --rm
 Podes probar las nuevas funcionalidades del bot antes de hacer el PullRequest.
 Ejecuta esto y anda a [UNOTestBots_BOT](http://t.me/UNOTestBots_BOT)
 ```
-pipenv run main.py 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
+pipenv run main.py
 ```
 
 ### Aportes

@@ -1,7 +1,6 @@
 import logging
 import requests
 import os
-import sys
 import messages as responses
 from github import Github
 from telegram.ext import Updater, CommandHandler
@@ -28,7 +27,8 @@ if MODE == 'prod':
         return updater
 else:
     API_TOKEN = '1761269185:AAFrxdpg13lS4X6NaHnENizGKa0VXsW9z9c'
-    GITHUB_TOKEN = sys.argv[1]
+    dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
+    GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
         updater.start_polling()
         return updater
