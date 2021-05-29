@@ -1,7 +1,21 @@
 # Helpers
 def normalize_markdown(text):
     """Replace para evitar errores con caracteres especificos"""
-    return text.replace('.','\\.').replace('!','\\!').replace('-','\\-').replace('(','\\(').replace(')','\\)').replace('[','\\[').replace(']','\\]').replace('<','\\<').replace('>','\\>')
+    return text.replace("<sup>","^")\
+        .replace("</sup>","")\
+        .replace("<sub>","\\_")\
+        .replace("</sub>","")\
+        .replace('.','\\.')\
+        .replace('!','\\!')\
+        .replace('-','\\-')\
+        .replace('+','\\+')\
+        .replace('=','\\=')\
+        .replace('(','\\(')\
+        .replace(')','\\)')\
+        .replace('[','\\[')\
+        .replace(']','\\]')\
+        .replace('<','\\<')\
+        .replace('>','\\>')
 
 
 # Messages

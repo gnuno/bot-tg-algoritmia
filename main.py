@@ -26,7 +26,7 @@ if MODE == 'prod':
             webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
         return updater
 else:
-    API_TOKEN = '1761269185:AAFrxdpg13lS4X6NaHnENizGKa0VXsW9z9c'
+    API_TOKEN = '' #PASTE TELEGRAM TOKEN HERE
     dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
     GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
