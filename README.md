@@ -51,7 +51,8 @@ Ejecuta esto y anda a [UNOTestBots_BOT](http://t.me/UNOTestBots_BOT)
 ```
 pipenv run main.py
 ```
-NOTA: Antes de ejecutar debes crear un token de telegram o usar este: 1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI
+*NOTA: antes de ejecutar agregar el token, el cual es 1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI*
+
 ### Aportes
 
 Para contribuir con el código o arreglando errores/bugs, lo podés hacer de la siguiente manera:
