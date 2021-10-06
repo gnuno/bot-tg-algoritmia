@@ -26,7 +26,7 @@ if MODE == 'prod':
             webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
         return updater
 else:
-    API_TOKEN = '' #Copiar aca el token
+    API_TOKEN = '1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI' #Copiar aca el token
     dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
     GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
@@ -55,17 +55,29 @@ def help_command(update, context):
 
 def actualChallenge(update, context):
     """Busca el reto actual"""
-    logger.info(f"USER {update.message.from_user.id} /challenge")
+    splitted = update.message.text.split()
+    idChallenge = splitted[1] if len(splitted) > 1 else None
+    challenge = None
+    if idChallenge:
+        logger.info(f"USER {update.message.from_user.id} /challenge {idChallenge}")
+        contents = REPO.get_contents("")
+        for content_file in contents:
+            id = content_file.path.split("-")[0]
+            if int(id) == int(idChallenge):
+                challenge = content_file
+                break
+    else:
+        logger.info(f"USER {update.message.from_user.id} /challenge")
+        # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
+        challenge = REPO.get_contents("")[-3]
 
-    # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
-    challenge = REPO.get_contents("")[-3]
     # Accedemos al readme
     readme_url = REPO.get_contents(f"{challenge.path}/README.md").download_url
     readme = requests.get(readme_url).text
 
     # Replace para parsear markdown normal al de telegram
     readme = readme.replace('**','*').replace('#',' ') 
-    
+
     update.message.reply_markdown_v2(responses.normalize_markdown(readme))
 
 
