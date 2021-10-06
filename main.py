@@ -26,7 +26,7 @@ if MODE == 'prod':
             webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
         return updater
 else:
-    API_TOKEN = '1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI' #Copiar aca el token
+    API_TOKEN = '' #Copiar aca el token
     dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
     GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
@@ -54,18 +54,21 @@ def help_command(update, context):
 
 
 def actualChallenge(update, context):
-    """Busca el reto actual"""
+    """Busca el reto actual o por id de challenge"""
     splitted = update.message.text.split()
-    idChallenge = splitted[1] if len(splitted) > 1 else None
+    id_challenge = splitted[1] if len(splitted) > 1 else None
     challenge = None
-    if idChallenge:
-        logger.info(f"USER {update.message.from_user.id} /challenge {idChallenge}")
+    if id_challenge:
+        logger.info(f"USER {update.message.from_user.id} /challenge {id_challenge}")
         contents = REPO.get_contents("")
         for content_file in contents:
-            id = content_file.path.split("-")[0]
-            if int(id) == int(idChallenge):
+            splitted_path = content_file.path.split("-")
+            id = splitted_path[0] if len(splitted_path) > 1 else None
+            if id != None and int(id) == int(id_challenge):
                 challenge = content_file
                 break
+        if challenge == None:
+            challenge = REPO.get_contents("")[-3]
     else:
         logger.info(f"USER {update.message.from_user.id} /challenge")
         # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
