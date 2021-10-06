@@ -54,18 +54,33 @@ def help_command(update, context):
 
 
 def actualChallenge(update, context):
-    """Busca el reto actual"""
-    logger.info(f"USER {update.message.from_user.id} /challenge")
+    """Busca el reto actual o por id de challenge"""
+    splitted = update.message.text.split()
+    id_challenge = splitted[1] if len(splitted) > 1 else None
+    challenge = None
+    if id_challenge:
+        logger.info(f"USER {update.message.from_user.id} /challenge {id_challenge}")
+        contents = REPO.get_contents("")
+        for content_file in contents:
+            splitted_path = content_file.path.split("-")
+            id = splitted_path[0] if len(splitted_path) > 1 else None
+            if id != None and int(id) == int(id_challenge):
+                challenge = content_file
+                break
+        if challenge == None:
+            challenge = REPO.get_contents("")[-3]
+    else:
+        logger.info(f"USER {update.message.from_user.id} /challenge")
+        # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
+        challenge = REPO.get_contents("")[-3]
 
-    # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
-    challenge = REPO.get_contents("")[-3]
     # Accedemos al readme
     readme_url = REPO.get_contents(f"{challenge.path}/README.md").download_url
     readme = requests.get(readme_url).text
 
     # Replace para parsear markdown normal al de telegram
     readme = readme.replace('**','*').replace('#',' ') 
-    
+
     update.message.reply_markdown_v2(responses.normalize_markdown(readme))
 
 
