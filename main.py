@@ -27,7 +27,7 @@ if MODE == 'prod':
             webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
         return updater
 else:
-    API_TOKEN = '1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI' #Copiar aca el token
+    API_TOKEN = '' #Copiar aca el token
     dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
     GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
@@ -54,6 +54,18 @@ def help_command(update, context):
     update.message.reply_markdown_v2(responses.help_message())
 
 
+def getChallenge(id_challenge):
+    """Recibe un ID y busca en el repo tal challenge o el ultimo si no existe"""
+    contents = REPO.get_contents("")
+    for content_file in contents:
+        splitted_path = content_file.path.split("-")
+        id = splitted_path[0] if len(splitted_path) > 1 else None
+        if id != None and int(id) == int(id_challenge):
+            return content_file
+    if challenge == None:
+        return REPO.get_contents("")[-3]
+
+
 def actualChallenge(update, context):
     """Busca el reto actual o por id de challenge"""
     splitted = update.message.text.split()
@@ -61,15 +73,7 @@ def actualChallenge(update, context):
     challenge = None
     if id_challenge:
         logger.info(f"USER {update.message.from_user.id} /challenge {id_challenge}")
-        contents = REPO.get_contents("")
-        for content_file in contents:
-            splitted_path = content_file.path.split("-")
-            id = splitted_path[0] if len(splitted_path) > 1 else None
-            if id != None and int(id) == int(id_challenge):
-                challenge = content_file
-                break
-        if challenge == None:
-            challenge = REPO.get_contents("")[-3]
+        challenge = getChallenge(id_challenge)
     else:
         logger.info(f"USER {update.message.from_user.id} /challenge")
         # Accedemos a la ultima carpeta (menos README y menos LICENSE = ultima carpeta)
@@ -98,14 +102,22 @@ def allChallenges(update, context):
             keyboard.append([InlineKeyboardButton(f"{id} - {splitted[1]}", callback_data = id.__str__())])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Todos los desafios disponibles:', reply_markup=reply_markup)
+    context.bot.send_message(chat_id= update.message.chat.id, reply_markup= reply_markup, text= 'Todos los desafios disponibles:')
 
 
 def selectedChallenge(update, context):
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     query.answer()
-    query.edit_message_text(text=f"Selected option: {query.data}")
+    
+    challenge = getChallenge(query.data)
+    readme_url = REPO.get_contents(f"{challenge.path}/README.md").download_url
+    readme = requests.get(readme_url).text
+
+    # Replace para parsear markdown normal al de telegram
+    readme = readme.replace('**','*').replace('#',' ') 
+    update.callback_query.message.reply_markdown_v2(responses.normalize_markdown(readme))
+    #query.edit_message_text(text= responses.normalize_markdown(readme))
 
 
 def error(update, context):
@@ -123,7 +135,7 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("challenge", actualChallenge))
-    dispatcher.add_handler(CommandHandler("all", allChallenges))
+    dispatcher.add_handler(CommandHandler("list", allChallenges))
     dispatcher.add_handler(CallbackQueryHandler(selectedChallenge))
 
     # Handler para errores
