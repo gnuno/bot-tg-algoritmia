@@ -84,6 +84,21 @@ def actualChallenge(update, context):
     update.message.reply_markdown_v2(responses.normalize_markdown(readme))
 
 
+def allChallenges(update, context):
+    """Lista todos los challenges disponibles para luego acceder por id"""
+    logger.info(f"USER {update.message.from_user.id} /all")
+    challenges = REPO.get_contents("")
+    
+    response = "Todos los desafios disponibles:\n"
+    for challenge in challenges:
+        splitted = challenge.path.split("-")
+        id = splitted[0] if len(splitted) > 1 else None
+        if id != None:
+            response += f"*{id}* - {splitted[1]}]\n"
+    
+    update.message.reply_markdown_v2(responses.normalize_markdown(response))
+    
+
 def error(update, context):
     """Loggea los errores causados por el Updater"""    
     logger.warning(f'Update {update} caused error {context.error}')
@@ -99,6 +114,7 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("challenge", actualChallenge))
+    dispatcher.add_handler(CommandHandler("all", allChallenges))
 
     # Handler para errores
     dispatcher.add_error_handler(error)
