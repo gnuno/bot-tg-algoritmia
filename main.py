@@ -3,7 +3,8 @@ import requests
 import os
 import messages as responses
 from github import Github
-from telegram.ext import Updater, CommandHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 
 
 ### Configurar Login
@@ -26,7 +27,7 @@ if MODE == 'prod':
             webhook_url= f"https://{APP_NAME}.herokuapp.com/{API_TOKEN}")
         return updater
 else:
-    API_TOKEN = '' #Copiar aca el token
+    API_TOKEN = '1761269185:AAHLnECJ30OTXKnR5GkOvQaj6d0PNckoPcI' #Copiar aca el token
     dusty_token = '///gh//p_w//zlsG//PbF//5X2nA//mmy//ySzhM//TEmF//137//QY2v//tKNN/'
     GITHUB_TOKEN = dusty_token.replace('/','')
     def run(updater):
@@ -89,15 +90,23 @@ def allChallenges(update, context):
     logger.info(f"USER {update.message.from_user.id} /all")
     challenges = REPO.get_contents("")
     
-    response = "Todos los desafios disponibles:\n"
+    keyboard = []
     for challenge in challenges:
         splitted = challenge.path.split("-")
         id = splitted[0] if len(splitted) > 1 else None
         if id != None:
-            response += f"*{id}* - {splitted[1]}]\n"
+            keyboard.append([InlineKeyboardButton(f"{id} - {splitted[1]}", callback_data = id.__str__())])
     
-    update.message.reply_markdown_v2(responses.normalize_markdown(response))
-    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Todos los desafios disponibles:', reply_markup=reply_markup)
+
+
+def selectedChallenge(update, context):
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+    query.answer()
+    query.edit_message_text(text=f"Selected option: {query.data}")
+
 
 def error(update, context):
     """Loggea los errores causados por el Updater"""    
@@ -115,6 +124,7 @@ def main():
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("challenge", actualChallenge))
     dispatcher.add_handler(CommandHandler("all", allChallenges))
+    dispatcher.add_handler(CallbackQueryHandler(selectedChallenge))
 
     # Handler para errores
     dispatcher.add_error_handler(error)
